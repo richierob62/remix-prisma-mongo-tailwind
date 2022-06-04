@@ -1,12 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react'
 
 interface FormFieldProps {
-  htmlFor: string;
-  label: string;
-  type?: string;
-  value: any;
-  onChange: (...args: any) => any;
-  error?: string;
+  htmlFor: string
+  label: string
+  type?: string
+  value: any
+  onChange: (...args: any) => any
+  error?: string
 }
 
 export default function FormField({
@@ -15,13 +15,13 @@ export default function FormField({
   type = 'text',
   value,
   onChange = () => {},
-  error = '',
+  error = ''
 }: FormFieldProps) {
-  const [errorText, setErrorText] = useState(error);
+  const [errorText, setErrorText] = useState(error)
 
   useEffect(() => {
-    setErrorText(error);
-  }, [error]);
+    setErrorText(error)
+  }, [error])
 
   return (
     <>
@@ -30,8 +30,8 @@ export default function FormField({
       </label>
       <input
         onChange={(e) => {
-          onChange(e);
-          setErrorText('');
+          onChange(e)
+          setErrorText('')
         }}
         type={type}
         id={htmlFor}
@@ -43,5 +43,5 @@ export default function FormField({
         {errorText || ''}
       </div>
     </>
-  );
+  )
 }

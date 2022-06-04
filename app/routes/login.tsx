@@ -1,27 +1,10 @@
-import React, { useState } from 'react';
-
-import { Form } from '@remix-run/react';
-import FormField from '../components/formField';
-import Layout from '~/components/layout';
+import { Form } from '@remix-run/react'
+import FormField from '../components/formField'
+import Layout from '~/components/layout'
+import useLogin from '../hooks/useLogin'
 
 export default function Login() {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    firstName: '',
-    lastName: '',
-  });
-  const [action, setAction] = useState('login');
-
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    field: string
-  ) => {
-    setFormData((current) => ({
-      ...current,
-      [field]: e.target.value,
-    }));
-  };
+  const { action, formData, setAction, handleInputChange } = useLogin()
 
   return (
     <Layout>
@@ -82,5 +65,5 @@ export default function Login() {
         </Form>
       </div>
     </Layout>
-  );
+  )
 }
