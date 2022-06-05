@@ -1,4 +1,5 @@
 prisma
   npx prisma db push
   npx prisma studio
+  npx prisma generate
 

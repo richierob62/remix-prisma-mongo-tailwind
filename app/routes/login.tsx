@@ -1,10 +1,87 @@
-import { Form } from '@remix-run/react'
-import FormField from '../components/formField'
+import * as _ from 'lodash'
+
+import type { ActionFunction, LoaderFunction } from '@remix-run/node'
+import { Form, useActionData } from '@remix-run/react'
+import { getUser, login, register } from '../services/user/auth.server'
+import {
+  validateAction,
+  validateEmail,
+  validateFirstName,
+  validateLastName,
+  validatePassword
+} from '../validators.server'
+
+import FormField from '~/components/formField'
 import Layout from '~/components/layout'
-import useLogin from '../hooks/useLogin'
+import type { LoginErrors } from '../utils/types.server'
+import { json } from '@remix-run/node'
+import { redirect } from '@remix-run/node'
+import useLogin from '~/hooks/useLogin'
+
+export const loader: LoaderFunction = async ({ request }) => {
+  return (await getUser(request)) ? redirect('/') : null
+}
+
+export const action: ActionFunction = async ({ request }) => {
+  const formData = await request.formData()
+
+  const errors: LoginErrors = {}
+
+  const { value: action, error: e1 } = validateAction(formData.get('_action'))
+  if (e1) errors._action = e1
+
+  const { value: email, error: e2 } = validateEmail(formData.get('email'))
+  if (e2) errors.email = e2
+
+  const { value: password, error: e3 } = validatePassword(
+    formData.get('password')
+  )
+  if (e3) errors.password = e3
+
+  let firstName, lastName
+
+  if (action === 'register') {
+    const { value: fn, error: e4 } = validateFirstName(
+      formData.get('firstName')
+    )
+    firstName = fn
+    if (e4) errors.firstName = e4
+
+    const { value: ln, error: e5 } = validateLastName(formData.get('lastName'))
+    lastName = ln
+    if (e5) errors.lastName = e5
+  }
+
+  if (!_.isEmpty(errors))
+    return json(
+      {
+        errors,
+        formAction: action,
+        fields: { email, password, firstName, lastName }
+      },
+      { status: 400 }
+    )
+
+  switch (action) {
+    case 'login':
+      return await login({ email, password })
+
+    case 'register':
+      return await register({ email, password, firstName, lastName })
+  }
+}
 
 export default function Login() {
-  const { action, formData, setAction, handleInputChange } = useLogin()
+  const actionData = useActionData()
+
+  const {
+    action,
+    formValues,
+    setAction,
+    handleInputChange,
+    formLevelError,
+    fieldLevelErrors
+  } = useLogin(actionData)
 
   return (
     <Layout>
@@ -22,35 +99,42 @@ export default function Login() {
           action === 'login' ? 'Log In' : 'Sign Up'
         } To Use The Site`}</p>
 
-        <Form className="rounded-2xl bg-gray-200 p-6 w-96">
+        <Form method="post" className="rounded-2xl bg-gray-200 p-6 w-96">
+          <div className="text-xs font-semibold text-center tracking-wide text-red-500 w-full">
+            {formLevelError}
+          </div>
           {action !== 'login' ? (
             <>
               <FormField
                 htmlFor="firstName"
                 label="First Name"
-                value={formData.firstName}
+                value={formValues.firstName}
                 onChange={(e) => handleInputChange(e, 'firstName')}
+                error={fieldLevelErrors.firstName}
               />
               <FormField
                 htmlFor="lastName"
                 label="Last Name"
-                value={formData.lastName}
+                value={formValues.lastName}
                 onChange={(e) => handleInputChange(e, 'lastName')}
+                error={fieldLevelErrors.lastName}
               />
             </>
           ) : null}
           <FormField
             htmlFor="email"
             label="Email"
-            value={formData.email}
+            value={formValues.email}
             onChange={(e) => handleInputChange(e, 'email')}
+            error={fieldLevelErrors.email}
           />
           <FormField
             htmlFor="password"
             label="Password"
             type="password"
-            value={formData.password}
+            value={formValues.password}
             onChange={(e) => handleInputChange(e, 'password')}
+            error={fieldLevelErrors.password}
           />
           <div className="w-full text-center">
             <button
