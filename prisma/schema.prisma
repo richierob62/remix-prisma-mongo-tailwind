@@ -11,15 +11,63 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  email     String   @unique
-  password  String
-  profile   Profile
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id               String    @id @default(auto()) @map("_id") @db.ObjectId
+  email            String    @unique
+  password         String
+  profile          Profile
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  messagesSent     Message[] @relation("MessagesSent")
+  messagesReceived Message[] @relation("MessagesReceived")
 }
 
 type Profile {
   firstName String
   lastName  String
+}
+
+model Message {
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  style       MessageStyle?
+  author      User?         @relation(fields: [authorId], references: [id], "MessagesSent")
+  authorId    String?       @db.ObjectId
+  recipient   User?         @relation(fields: [recipientId], references: [id], "MessagesReceived")
+  recipientId String?       @db.ObjectId
+}
+
+type MessageStyle {
+  backgroundColor Color @default(YELLOW)
+  textColor       Color @default(WHITE)
+  emoji           Emoji @default(THUMBSUP)
+}
+
+enum Emoji {
+  THUMBSUP
+  PARTY
+  HANDSUP
+}
+
+enum Zodiac {
+  AQUARIUS
+  PISCES
+  ARIES
+  TAURUS
+  GEMINI
+  CANCER
+  LEO
+  VIRGO
+  LIBRA
+  SCORPIO
+  SAGITTARIUS
+  CAPRICORNUS
+}
+
+enum Color {
+  RED
+  GREEN
+  YELLOW
+  BLUE
+  WHITE
 }
