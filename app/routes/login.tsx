@@ -8,12 +8,14 @@ import {
   validateEmail,
   validateFirstName,
   validateLastName,
-  validatePassword
+  validatePassword,
+  validateZodiac
 } from '../validators.server'
 
 import FormField from '~/components/formField'
 import Layout from '~/components/layout'
 import type { LoginErrors } from '../utils/types.server'
+import { SelectBox } from '../components/selectBox'
 import { json } from '@remix-run/node'
 import { redirect } from '@remix-run/node'
 import useLogin from '~/hooks/useLogin'
@@ -38,7 +40,7 @@ export const action: ActionFunction = async ({ request }) => {
   )
   if (e3) errors.password = e3
 
-  let firstName, lastName
+  let firstName, lastName, zodiac
 
   if (action === 'register') {
     const { value: fn, error: e4 } = validateFirstName(
@@ -50,6 +52,10 @@ export const action: ActionFunction = async ({ request }) => {
     const { value: ln, error: e5 } = validateLastName(formData.get('lastName'))
     lastName = ln
     if (e5) errors.lastName = e5
+
+    const { value: z, error: e6 } = validateZodiac(formData.get('zodiac'))
+    zodiac = z
+    if (e6) errors.zodiac = e6
   }
 
   if (!_.isEmpty(errors))
@@ -67,7 +73,7 @@ export const action: ActionFunction = async ({ request }) => {
       return await login({ email, password })
 
     case 'register':
-      return await register({ email, password, firstName, lastName })
+      return await register({ email, password, firstName, lastName, zodiac })
   }
 }
 
@@ -80,7 +86,8 @@ export default function Login() {
     setAction,
     handleInputChange,
     formLevelError,
-    fieldLevelErrors
+    fieldLevelErrors,
+    zodiacs
   } = useLogin(actionData)
 
   return (
@@ -118,6 +125,15 @@ export default function Login() {
                 value={formValues.lastName}
                 onChange={(e) => handleInputChange(e, 'lastName')}
                 error={fieldLevelErrors.lastName}
+              />
+              <SelectBox
+                options={zodiacs}
+                name="zodiac"
+                value={formValues.zodiac}
+                label="Zodiac Sign"
+                containerClassName="w-full"
+                className="w-full rounded-xl px-3 py-2 text-gray-400"
+                onChange={(e) => handleInputChange(e, 'zodiac')}
               />
             </>
           ) : null}

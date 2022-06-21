@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs'
 import { prisma } from '~/services/prisma.server'
 
 export const createUser = async (userData: RegisterForm) => {
-  const { email, firstName, lastName, password } = userData
+  const { email, firstName, lastName, password, zodiac } = userData
 
   const passwordHash = await bcrypt.hash(password, 10)
 
@@ -13,7 +13,8 @@ export const createUser = async (userData: RegisterForm) => {
       password: passwordHash,
       profile: {
         firstName,
-        lastName
+        lastName,
+        zodiac
       }
     }
   })

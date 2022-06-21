@@ -24,6 +24,7 @@ model User {
 type Profile {
   firstName String
   lastName  String
+  zodiac    Zodiac
 }
 
 model Message {
@@ -35,6 +36,7 @@ model Message {
   authorId    String?       @db.ObjectId
   recipient   User?         @relation(fields: [recipientId], references: [id], "MessagesReceived")
   recipientId String?       @db.ObjectId
+  messageText String?
 }
 
 type MessageStyle {
@@ -61,7 +63,7 @@ enum Zodiac {
   LIBRA
   SCORPIO
   SAGITTARIUS
-  CAPRICORNUS
+  CAPRICORN
 }
 
 enum Color {
