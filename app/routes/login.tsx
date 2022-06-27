@@ -18,7 +18,7 @@ import type { LoginErrors } from '../utils/types.server'
 import { SelectBox } from '../components/selectBox'
 import { json } from '@remix-run/node'
 import { redirect } from '@remix-run/node'
-import useLogin from '~/hooks/useLogin'
+import { useLogin } from '~/hooks/useLogin'
 
 export const loader: LoaderFunction = async ({ request }) => {
   return (await getUser(request)) ? redirect('/') : null

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 
 import { zodiacMap } from '../utils/constants'
 
-function useLogin(actionData: any) {
+export function useLogin(actionData: any) {
   const [formValues, setFormValues] = useState({
     email: actionData?.errors?.email || '',
     password: actionData?.errors?.password || '',
@@ -62,5 +62,3 @@ function useLogin(actionData: any) {
     zodiacs
   }
 }
-
-export default useLogin

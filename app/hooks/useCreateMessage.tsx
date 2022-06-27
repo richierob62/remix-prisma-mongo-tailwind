@@ -13,7 +13,7 @@ const getOptions = (data: any) =>
     value: key
   }))
 
-function useCreateMessage(
+export function useCreateMessage(
   actionData: any,
   loaderData: { recipient: User; currentUser: User }
 ) {
@@ -86,5 +86,3 @@ function useCreateMessage(
     zodiac
   }
 }
-
-export default useCreateMessage

@@ -18,7 +18,7 @@ import { SelectBox } from '~/components/selectBox'
 import UserAvatar from '~/components/userAvatar'
 import { createMessage } from '../../services/messages/message.server'
 import { getUserById } from '~/services/user/user.server'
-import useCreateMessage from '../../hooks/useCreateMessage'
+import { useCreateMessage } from '../../hooks/useCreateMessage'
 
 export const loader: LoaderFunction = async ({ params, request }) => {
   const { userId } = params
