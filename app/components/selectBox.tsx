@@ -27,7 +27,7 @@ export const SelectBox: React.FC<SelectBoxProps> = (props) => {
   } = props
 
   return (
-    <div className="flex flex-col w-full">
+    <div className="flex flex-col">
       <label htmlFor={id} className="text-blue-600 font-semibold">
         {label}
       </label>

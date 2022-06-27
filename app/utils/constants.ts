@@ -34,3 +34,18 @@ export const backgroundColorMap = {
   BLUE: 'bg-blue-400',
   WHITE: 'bg-white'
 }
+
+export const sortOptions = [
+  {
+    name: 'Date',
+    value: 'date'
+  },
+  {
+    name: 'Sender Name',
+    value: 'sender'
+  },
+  {
+    name: 'Emoji',
+    value: 'emoji'
+  }
+]

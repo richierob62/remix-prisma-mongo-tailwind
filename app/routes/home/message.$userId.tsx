@@ -2,7 +2,7 @@ import * as _ from 'lodash'
 
 import type { ActionFunction, LoaderFunction } from '@remix-run/node'
 import { Form, useActionData, useLoaderData } from '@remix-run/react'
-import { getUser, requireUserId } from '~/services/user/auth.server'
+import { getUser, getUserId, requireUserId } from '~/services/user/auth.server'
 import { json, redirect } from '@remix-run/node'
 import {
   validateBackgroundColor,
@@ -16,6 +16,7 @@ import type { MessageErrors } from '~/utils/types.server'
 import Modal from '~/components/modal'
 import { SelectBox } from '~/components/selectBox'
 import UserAvatar from '~/components/userAvatar'
+import { createMessage } from '../../services/messages/message.server'
 import { getUserById } from '~/services/user/user.server'
 import useCreateMessage from '../../hooks/useCreateMessage'
 
@@ -35,11 +36,11 @@ export const loader: LoaderFunction = async ({ params, request }) => {
 
 export const action: ActionFunction = async ({ request }) => {
   const formValues = await request.formData()
-  const currentUserId = await requireUserId(request)
+  const currentUserId = await getUserId(request)
 
   const errors: MessageErrors = {}
 
-  const recipientId = formValues.get('recipientId')
+  const recipientId = formValues.get('recipientId') as string
 
   const { value: messageText, error: e2 } = validateMessageText(
     formValues.get('messageText')
@@ -69,8 +70,18 @@ export const action: ActionFunction = async ({ request }) => {
     )
 
   // create message
+  await createMessage({
+    userId: currentUserId as string,
+    recipientId,
+    messageText,
+    style: {
+      textColor,
+      backgroundColor,
+      emoji
+    }
+  })
 
-  return {}
+  return redirect('/home')
 }
 
 const MessageModal = () => {
