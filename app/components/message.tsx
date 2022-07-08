@@ -34,9 +34,8 @@ const Message: React.FC<MessageProps> = ({ profile, message }) => {
           {message.messageText}
         </p>
         <p className="italic text-sm text-gray-200">
-          {`${formatDistanceToNowStrict(
-            new Date(message.createdAt || '')
-          )} ago`}
+          {message.createdAt &&
+            `${formatDistanceToNowStrict(new Date(message.createdAt))} ago`}
         </p>
         <div className="absolute bottom-4 right-4 bg-white rounded-full h-10 w-10 flex items-center justify-center text-2xl">
           {emojiMap[message.style?.emoji || 'THUMBSUP']}
