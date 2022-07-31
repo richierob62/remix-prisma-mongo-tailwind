@@ -3,17 +3,17 @@ import {
   getFilteredMessages,
   getRecentMessages
 } from '../services/messages/message.server'
+import { getUser, getUserId } from '~/services/user/auth.server'
 
 import Layout from '../components/layout'
 import type { LoaderFunction } from '@remix-run/node'
 import Message from '../components/message'
 import type { MessageWithAuthor } from '../utils/types.server'
 import type { Prisma } from '@prisma/client'
-import { RecentMessages } from '../components/recent-messages'
-import { SearchBar } from '../components/searchbar'
+import { RecentMessages } from '../components/recentMessages'
+import { SearchBar } from '../components/searchBar'
 import UserPanel from '../components/userPanel'
 import { getOtherUsers } from '../services/user/user.server'
-import { getUserId } from '~/services/user/auth.server'
 import { json } from '@remix-run/node'
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -22,6 +22,8 @@ export const loader: LoaderFunction = async ({ request }) => {
   if (!userId) return null
 
   const users = await getOtherUsers(userId)
+
+  const user = await getUser(request)
 
   const url = new URL(request.url)
   const filter = url.searchParams.get('filter')
@@ -85,11 +87,11 @@ export const loader: LoaderFunction = async ({ request }) => {
   const messages = await getFilteredMessages(userId, sortOptions, textFilter)
   const recentMessages = await getRecentMessages()
 
-  return json({ users, messages, recentMessages })
+  return json({ users, messages, recentMessages, user })
 }
 
 const Home = () => {
-  const { users, messages, recentMessages } = useLoaderData()
+  const { users, messages, recentMessages, user } = useLoaderData()
 
   return (
     <Layout>
@@ -97,7 +99,7 @@ const Home = () => {
         <Outlet />
         <UserPanel users={users} />
         <div className="flex flex-col flex-1">
-          <SearchBar />
+          <SearchBar profile={user.profile} />
           <div className="flex-1 flex">
             <div className="w-full p-10 flex flex-col gap-y-4">
               {messages.map((message: MessageWithAuthor) => (

@@ -77,7 +77,7 @@ export const action: ActionFunction = async ({ request }) => {
   }
 }
 
-export default function Login() {
+const Login = () => {
   const actionData = useActionData()
 
   const {
@@ -167,3 +167,5 @@ export default function Login() {
     </Layout>
   )
 }
+
+export default Login

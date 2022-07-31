@@ -1,10 +1,16 @@
 import { Form, useNavigate, useSearchParams } from '@remix-run/react'
 import React, { useState } from 'react'
 
+import type { Profile } from '@prisma/client'
 import { SelectBox } from './selectBox'
+import { UserAvatar } from './userAvatar'
 import { sortOptions } from '../utils/constants'
 
-export const SearchBar = () => {
+interface SearchBarProps {
+  profile: Profile
+}
+
+export const SearchBar: React.FC<SearchBarProps> = ({ profile }) => {
   const [sortValue, setSortValue] = useState(sortOptions[0].value)
   const [filterValue, setFilterValue] = useState('')
 
@@ -65,6 +71,11 @@ export const SearchBar = () => {
           Clear Filters
         </button>
       )}
+      <UserAvatar
+        classname="h-14 w-14 transition duration-300 ease-in-out hover:scale-110 hover:border-2 hover:border-yellow-500 ml-auto"
+        profile={profile}
+        onClick={() => navigate('profile')}
+      />
     </Form>
   )
 }

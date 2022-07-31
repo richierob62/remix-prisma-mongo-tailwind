@@ -1,6 +1,6 @@
 import type { MessageWithRecipient } from '../utils/types.server'
 import React from 'react'
-import UserAvatar from './userAvatar'
+import { UserAvatar } from './userAvatar'
 import { emojiMap } from '../utils/constants'
 
 interface RecentMessagesProps {

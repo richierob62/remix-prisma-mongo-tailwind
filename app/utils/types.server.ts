@@ -56,3 +56,10 @@ export interface MessageWithAuthor extends Message {
 export interface MessageWithRecipient extends Message {
   recipient: User
 }
+
+export interface ProfileEditErrors {
+  _action?: string
+  firstName?: string
+  lastName?: string
+  zodiac?: string
+}

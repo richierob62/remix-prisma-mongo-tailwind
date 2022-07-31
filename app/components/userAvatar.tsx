@@ -6,7 +6,7 @@ interface AvatarProps {
   onClick?: (...args: any) => any
 }
 
-const UserAvatar = ({ onClick, profile, classname }: AvatarProps) => {
+export const UserAvatar = ({ onClick, profile, classname }: AvatarProps) => {
   return (
     <div
       className={`cursor-pointer bg-gray-400 rounded-full flex justify-center items-center ${classname}`}
@@ -17,5 +17,3 @@ const UserAvatar = ({ onClick, profile, classname }: AvatarProps) => {
     </div>
   )
 }
-
-export default UserAvatar
