@@ -22,9 +22,10 @@ model User {
 }
 
 type Profile {
-  firstName String
-  lastName  String
-  zodiac    Zodiac
+  firstName      String
+  lastName       String
+  zodiac         Zodiac
+  profilePicture String?
 }
 
 model Message {
@@ -32,7 +33,7 @@ model Message {
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
   style       MessageStyle?
-  author      User?         @relation(fields: [authorId], references: [id], "MessagesSent")
+  author      User?         @relation(fields: [authorId], references: [id], onDelete: Cascade, "MessagesSent")
   authorId    String?       @db.ObjectId
   recipient   User?         @relation(fields: [recipientId], references: [id], "MessagesReceived")
   recipientId String?       @db.ObjectId

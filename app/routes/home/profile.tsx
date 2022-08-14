@@ -2,7 +2,9 @@ import * as _ from 'lodash'
 
 import type { ActionFunction, LoaderFunction } from '@remix-run/node'
 import { Form, useActionData, useLoaderData } from '@remix-run/react'
-import { getUser, requireUserId } from '~/services/user/auth.server'
+import { deleteUser, updateUser } from '../../services/user/user.server'
+import { getUser, logout, requireUserId } from '~/services/user/auth.server'
+import { json, redirect } from '@remix-run/node'
 import {
   validateFirstName,
   validateLastName,
@@ -10,14 +12,12 @@ import {
 } from '../../validators.server'
 
 import FormField from '~/components/formField'
+import { ImageUploader } from '~/components/imageUploader'
 import Modal from '~/components/modal'
 import type { ProfileEditErrors } from '../../utils/types.server'
 import React from 'react'
 import { SelectBox } from '~/components/selectBox'
 import type { User } from '@prisma/client'
-import { json } from '@remix-run/node'
-import { redirect } from '@remix-run/node'
-import { updateUser } from '../../services/user/user.server'
 import { zodiacMap } from '../../utils/constants'
 
 interface LoaderProps {
@@ -84,7 +84,11 @@ export const action: ActionFunction = async ({ request }) => {
         zodiac
       })
 
-      return null
+      return redirect(`/home`)
+
+    case 'delete':
+      await deleteUser(userId)
+      return logout(request)
 
     default:
       return json({ error: 'Invalid action' }, { status: 400 })
@@ -99,7 +103,8 @@ const ProfileModal = () => {
   const [formData, setFormData] = React.useState({
     firstName: actionData?.fields?.firstName || user?.profile?.firstName || '',
     lastName: actionData?.fields?.lastName || user?.profile?.lastName || '',
-    zodiac: user?.profile?.zodiac || ''
+    zodiac: user?.profile?.zodiac || '',
+    profilePicture: user?.profile?.profilePicture || ''
   })
 
   const handleInputChange = (
@@ -109,8 +114,22 @@ const ProfileModal = () => {
     setFormData((current) => ({ ...current, [field]: e.target.value }))
   }
 
+  const handleFileUpload = async (file: File) => {
+    let inputFormData = new FormData()
+    inputFormData.append('profile-pic', file)
+
+    const response = await fetch('/avatar', {
+      method: 'POST',
+      body: inputFormData
+    })
+
+    const { imageUrl } = await response.json()
+
+    setFormData((current) => ({ ...current, profilePicture: imageUrl }))
+  }
+
   return (
-    <Modal isOpen={true} className="w-1/3 p-10">
+    <Modal isOpen={true} className="w-1/2 p-10">
       <div className="p-3">
         <h2 className="text-4xl font-semibold text-blue-600 text-center mb-4">
           Your Profile
@@ -120,9 +139,19 @@ const ProfileModal = () => {
         </div>
 
         <div className="flex">
-          <div className="w-1/3">Image Uploader</div>
+          <div className="w-1/3">
+            <ImageUploader
+              onChange={handleFileUpload}
+              imageUrl={formData.profilePicture || ''}
+            />
+          </div>
           <div className="flex-1">
-            <Form method="post">
+            <Form
+              method="post"
+              onSubmit={(e) =>
+                !confirm('Are you sure?') ? e.preventDefault() : true
+              }
+            >
               <FormField
                 htmlFor="firstName"
                 label={'First Name'}
@@ -146,6 +175,14 @@ const ProfileModal = () => {
                 value={formData.zodiac}
                 onChange={(e) => handleInputChange(e, 'zodiac')}
               />
+              <button
+                name="_action"
+                value="delete"
+                className="rounded-xl w-full bg-red-300 font-semibold text-white px-16 py-2 transition duration-300 ease-in-out hover:bg-red-400 hover:translate-y-1"
+              >
+                Delete
+              </button>
+
               <div className="w-full text-right mt-4">
                 <button
                   name="_action"
