@@ -1,7 +1,7 @@
 import { Form, useNavigate } from '@remix-run/react'
 
 import type { User } from '@prisma/client'
-import { UserAvatar } from './userAvatar'
+import { UserAvatar } from './user_avatar'
 
 interface UserPanelProps {
   users: User[]

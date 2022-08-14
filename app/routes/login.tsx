@@ -12,13 +12,13 @@ import {
   validateZodiac
 } from '../validators.server'
 
-import FormField from '~/components/formField'
+import FormField from '~/components/form_field'
 import Layout from '~/components/layout'
 import type { LoginErrors } from '../utils/types.server'
-import { SelectBox } from '../components/selectBox'
+import { SelectBox } from '../components/select_box'
 import { json } from '@remix-run/node'
 import { redirect } from '@remix-run/node'
-import { useLogin } from '~/hooks/useLogin'
+import { useLogin } from '~/hooks/use_login'
 
 export const loader: LoaderFunction = async ({ request }) => {
   return (await getUser(request)) ? redirect('/') : null

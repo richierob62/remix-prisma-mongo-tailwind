@@ -2,7 +2,7 @@ import type { Message as IMessage, Profile } from '@prisma/client'
 import { backgroundColorMap, colorMap, emojiMap } from '../utils/constants'
 
 import React from 'react'
-import { UserAvatar } from './userAvatar'
+import { UserAvatar } from './user_avatar'
 import { formatDistanceToNowStrict } from 'date-fns'
 
 interface MessageProps {

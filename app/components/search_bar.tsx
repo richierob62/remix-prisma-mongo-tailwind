@@ -2,8 +2,8 @@ import { Form, useNavigate, useSearchParams } from '@remix-run/react'
 import React, { useState } from 'react'
 
 import type { Profile } from '@prisma/client'
-import { SelectBox } from './selectBox'
-import { UserAvatar } from './userAvatar'
+import { SelectBox } from './select_box'
+import { UserAvatar } from './user_avatar'
 import { sortOptions } from '../utils/constants'
 
 interface SearchBarProps {

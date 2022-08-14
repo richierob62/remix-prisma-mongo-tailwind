@@ -11,12 +11,12 @@ import {
   validateZodiac
 } from '../../validators.server'
 
-import FormField from '~/components/formField'
-import { ImageUploader } from '~/components/imageUploader'
+import FormField from '~/components/form_field'
+import { ImageUploader } from '~/components/image_uploader'
 import Modal from '~/components/modal'
 import type { ProfileEditErrors } from '../../utils/types.server'
 import React from 'react'
-import { SelectBox } from '~/components/selectBox'
+import { SelectBox } from '~/components/select_box'
 import type { User } from '@prisma/client'
 import { zodiacMap } from '../../utils/constants'
 
@@ -98,6 +98,8 @@ export const action: ActionFunction = async ({ request }) => {
 const ProfileModal = () => {
   const { user } = useLoaderData<LoaderProps>()
 
+  const [formButton, setFormButton] = React.useState('save')
+
   const actionData = useActionData()
 
   const [formData, setFormData] = React.useState({
@@ -148,9 +150,10 @@ const ProfileModal = () => {
           <div className="flex-1">
             <Form
               method="post"
-              onSubmit={(e) =>
-                !confirm('Are you sure?') ? e.preventDefault() : true
-              }
+              onSubmit={(e) => {
+                if (formButton === 'save') return true
+                return !confirm('Are you sure?') ? e.preventDefault() : true
+              }}
             >
               <FormField
                 htmlFor="firstName"
@@ -178,6 +181,7 @@ const ProfileModal = () => {
               <button
                 name="_action"
                 value="delete"
+                onClick={() => setFormButton('delete')}
                 className="rounded-xl w-full bg-red-300 font-semibold text-white px-16 py-2 transition duration-300 ease-in-out hover:bg-red-400 hover:translate-y-1"
               >
                 Delete
@@ -187,6 +191,7 @@ const ProfileModal = () => {
                 <button
                   name="_action"
                   value="save"
+                  onClick={() => setFormButton('save')}
                   className="rounded-xl bg-yellow-300 font-semibold text-blue-600 px-16 py-2 transition duration-300 ease-in-out hover:bg-yellow-400 hover:translate-y-1"
                 >
                   Save

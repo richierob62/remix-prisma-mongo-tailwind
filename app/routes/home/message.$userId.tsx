@@ -14,11 +14,11 @@ import {
 import Message from '~/components/message'
 import type { MessageErrors } from '~/utils/types.server'
 import Modal from '~/components/modal'
-import { SelectBox } from '~/components/selectBox'
-import { UserAvatar } from '~/components/userAvatar'
+import { SelectBox } from '~/components/select_box'
+import { UserAvatar } from '~/components/user_avatar'
 import { createMessage } from '../../services/messages/message.server'
 import { getUserById } from '~/services/user/user.server'
-import { useCreateMessage } from '../../hooks/useCreateMessage'
+import { useCreateMessage } from '../../hooks/use_create_message'
 
 export const loader: LoaderFunction = async ({ params, request }) => {
   const { userId } = params
