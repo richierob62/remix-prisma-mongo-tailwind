@@ -3,7 +3,7 @@ import {
   getFilteredMessages,
   getRecentMessages
 } from '../services/messages/message.server'
-import { getUser, getUserId } from '~/services/user/auth.server'
+import { getUser, getUserId, requireUserId } from '~/services/user/auth.server'
 
 import Layout from '../components/layout'
 import type { LoaderFunction } from '@remix-run/node'
@@ -17,6 +17,7 @@ import { getOtherUsers } from '../services/user/user.server'
 import { json } from '@remix-run/node'
 
 export const loader: LoaderFunction = async ({ request }) => {
+  await requireUserId(request)
   const userId = await getUserId(request)
 
   if (!userId) return null
