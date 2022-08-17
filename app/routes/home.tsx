@@ -138,7 +138,7 @@ const Home = () => {
             </div>
             <RecentMessages messages={recentMessages} />
           </div>
-          <NonNavForm />
+          {/* <NonNavForm /> */}
         </div>
       </div>
     </Layout>
