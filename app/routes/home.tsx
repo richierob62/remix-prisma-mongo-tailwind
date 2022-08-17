@@ -11,7 +11,6 @@ import { json, redirect } from '@remix-run/node'
 import Layout from '~/components/layout'
 import Message from '~/components/message'
 import type { MessageWithAuthor } from '../utils/types.server'
-import { NonNavForm } from '~/components/non_nav_form'
 import type { Prisma } from '@prisma/client'
 import { RecentMessages } from '~/components/recent_messages'
 import { SearchBar } from '~/components/search_bar'
@@ -138,7 +137,6 @@ const Home = () => {
             </div>
             <RecentMessages messages={recentMessages} />
           </div>
-          {/* <NonNavForm /> */}
         </div>
       </div>
     </Layout>

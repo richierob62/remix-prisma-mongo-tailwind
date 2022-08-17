@@ -10,11 +10,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Number {
-  id     String @id @default(auto()) @map("_id") @db.ObjectId
-  number Int    @default(0)
-}
-
 model User {
   id               String    @id @default(auto()) @map("_id") @db.ObjectId
   email            String    @unique
