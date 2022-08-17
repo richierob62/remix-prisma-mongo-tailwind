@@ -1,20 +1,22 @@
+import type { ActionFunction, LoaderFunction } from '@remix-run/node'
 import { Outlet, useLoaderData } from '@remix-run/react'
+import { bumpNumber, getCurrentNumber } from '~/services/other/number'
 import {
   getFilteredMessages,
   getRecentMessages
-} from '../services/messages/message.server'
+} from '~/services/messages/message.server'
 import { getUser, getUserId, requireUserId } from '~/services/user/auth.server'
+import { json, redirect } from '@remix-run/node'
 
-import Layout from '../components/layout'
-import type { LoaderFunction } from '@remix-run/node'
-import Message from '../components/message'
+import Layout from '~/components/layout'
+import Message from '~/components/message'
 import type { MessageWithAuthor } from '../utils/types.server'
+import { NonNavForm } from '~/components/non_nav_form'
 import type { Prisma } from '@prisma/client'
-import { RecentMessages } from '../components/recent_messages'
-import { SearchBar } from '../components/search_bar'
-import UserPanel from '../components/user_panel'
-import { getOtherUsers } from '../services/user/user.server'
-import { json } from '@remix-run/node'
+import { RecentMessages } from '~/components/recent_messages'
+import { SearchBar } from '~/components/search_bar'
+import UserPanel from '~/components/user_panel'
+import { getOtherUsers } from '~/services/user/user.server'
 
 export const loader: LoaderFunction = async ({ request }) => {
   await requireUserId(request)
@@ -88,7 +90,30 @@ export const loader: LoaderFunction = async ({ request }) => {
   const messages = await getFilteredMessages(userId, sortOptions, textFilter)
   const recentMessages = await getRecentMessages()
 
-  return json({ users, messages, recentMessages, user })
+  const number = await getCurrentNumber()
+
+  return json({ users, messages, recentMessages, user, number })
+}
+
+export const action: ActionFunction = async ({ request }) => {
+  await requireUserId(request)
+
+  const formData = await request.formData()
+
+  const formAction = formData.get('_action')
+
+  switch (formAction) {
+    case 'increase':
+      await bumpNumber(1)
+      return redirect(`/home`)
+
+    case 'decrease':
+      await bumpNumber(-1)
+      return redirect(`/home`)
+
+    default:
+      return json({ error: 'Invalid action' }, { status: 400 })
+  }
 }
 
 const Home = () => {
@@ -113,6 +138,7 @@ const Home = () => {
             </div>
             <RecentMessages messages={recentMessages} />
           </div>
+          <NonNavForm />
         </div>
       </div>
     </Layout>

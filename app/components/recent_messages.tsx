@@ -15,8 +15,11 @@ export const RecentMessages: React.FC<RecentMessagesProps> = ({ messages }) => {
       </h2>
 
       <div className="h-full flex flex-col gap-y-10 mt-10">
-        {messages.map((message) => (
-          <div className="h-24 w-24 relative" key={message.recipient.id}>
+        {messages.map((message, idx) => (
+          <div
+            className="h-24 w-24 relative"
+            key={`${message.recipient.id}-${idx}`}
+          >
             <UserAvatar
               classname="w-20 h-20"
               profile={message.recipient.profile}
